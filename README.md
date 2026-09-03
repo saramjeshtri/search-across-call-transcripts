@@ -1,8 +1,15 @@
 # Call Transcript Search
 
-Upload call transcripts (with speakers and timestamps), get an automatic summary
-of each call, and search across all calls by meaning to jump to the exact moment
-a topic was discussed.
+A tool for going through recorded sales and support calls without re-listening to them.
+
+You upload a call transcript and the app:
+
+- splits it into turns (who said what, and when)
+- writes a short summary of the call, including the next steps that were agreed
+- lets you search all your calls by meaning, not just keywords
+
+A search like "customer worried about price" jumps you straight to the moment it
+came up, with the timestamp and the lines around it.
 
 ## Tech stack
 

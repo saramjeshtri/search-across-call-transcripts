@@ -1,0 +1,10 @@
+[00:00:02] Sales Rep: Hi Marcus, thanks for making time today. Did you get a chance to try the trial?
+[00:00:08] Marcus: I did. The reporting is nice. My main concern is price - we're a team of forty and the per-seat cost adds up fast.
+[00:00:19] Sales Rep: That's fair. For teams over twenty-five we have volume pricing that brings it down about thirty percent.
+[00:00:28] Marcus: Okay that helps. The other thing is security - our IT team will ask about SSO and data residency in Europe.
+[00:00:38] Sales Rep: We support SAML SSO on the business plan, and we have an EU data region. I can send the security whitepaper.
+[00:00:49] Marcus: Please do. If the numbers work and IT signs off, we'd want to start in Q2.
+[00:00:57] Sales Rep: Great. I'll put together a formal quote with the volume discount and send the security docs by Thursday.
+[00:01:06] Marcus: Sounds good. I'll loop in our IT lead once I have the whitepaper.
+[00:01:12] Sales Rep: Perfect. So next steps: I send the quote and security whitepaper Thursday, you review with IT, and we aim for a Q2 start.
+[00:01:23] Marcus: That works. Thanks.

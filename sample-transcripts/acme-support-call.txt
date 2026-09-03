@@ -1,0 +1,19 @@
+Support call - Acme Analytics
+Date: 2026-02-11
+
+[00:00:03] Agent: Thanks for calling Acme support, this is Dana. How can I help?
+[00:00:09] Customer: Hi Dana. Since this morning my main dashboard just shows a spinner and never loads.
+It was fine yesterday.
+[00:00:18] Agent: Sorry about that. Can I confirm the account email on the line?
+[00:00:24] Customer: Sure, it's growth team at northwind dot io.
+[00:00:31] Agent: Thank you. I can see your workspace. There was a data pipeline change on our side last night.
+[00:00:42] Customer: So this is on your end, not something I broke?
+[00:00:46] Agent: Correct, it's our issue. The fix is already rolling out. Your region should be updated within about two hours.
+[00:00:58] Customer: Okay. We have a board meeting at 3pm and I really need the revenue chart working by then.
+[00:01:07] Agent: Understood. I'll mark this ticket as high priority and personally check your workspace at 1pm.
+[00:01:16] Customer: That would be great. Can you email me once it's back?
+[00:01:21] Agent: Yes, I'll send you an email confirmation the moment your dashboard loads normally.
+[00:01:29] Customer: Perfect, thank you Dana.
+[00:01:32] Agent: You're welcome. To recap: known issue on our side, fix rolling out, I'll verify at 1pm and email you. Anything else?
+[00:01:44] Customer: No, that's everything.
+[00:01:46] Agent: Thanks for your patience. Talk soon.

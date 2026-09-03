@@ -15,8 +15,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // Quick way to confirm the API is up and MongoDB is connected.
-  // mongo.readyState === 1 means "connected".
+  // is the API up and connected to the database?
   @Get('health')
   getHealth() {
     return {

@@ -3,20 +3,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CallsModule } from './calls/calls.module';
 
 @Module({
   imports: [
-    // Loads .env once and makes ConfigService available everywhere.
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // Opens the MongoDB connection when the app boots.
-    // useFactory lets us read the URI from .env instead of hard-coding it.
+    // connect to MongoDB using the URI from .env
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.getOrThrow<string>('MONGO_URI'),
       }),
     }),
+
+    CallsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
