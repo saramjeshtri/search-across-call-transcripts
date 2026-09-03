@@ -20,7 +20,6 @@ export class Call {
   title: string;
 
   // Turns are stored inside the call because we always load them together.
-  // Chunks will be their own collection since we search them separately.
   @Prop({ type: [TurnSchemaClass], default: [] })
   turns: TurnSchemaClass[];
 }

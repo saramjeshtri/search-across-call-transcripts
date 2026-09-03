@@ -2,13 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { CallsService } from './calls.service';
 import { Call } from './schemas/call.schema';
+import { ChunksService } from '../chunks/chunks.service';
 
 describe('CallsService', () => {
   let service: CallsService;
-  // Fake Mongoose model: create() just echoes back what it was given.
+
   const callModel = {
-    create: jest.fn((doc) => Promise.resolve(doc)),
+    create: jest.fn((doc) => Promise.resolve({ id: 'call-1', ...doc })),
   };
+  const chunksService = { indexCall: jest.fn() };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -16,6 +18,7 @@ describe('CallsService', () => {
       providers: [
         CallsService,
         { provide: getModelToken(Call.name), useValue: callModel },
+        { provide: ChunksService, useValue: chunksService },
       ],
     }).compile();
 
@@ -39,6 +42,14 @@ describe('CallsService', () => {
         ],
       }),
     );
+  });
+
+  it('indexes the saved call', async () => {
+    await service.create({ transcript: '[00:00:00] A: hi', title: 'x' });
+
+    expect(chunksService.indexCall).toHaveBeenCalledWith('call-1', [
+      { speaker: 'A', timeSeconds: 0, text: 'hi' },
+    ]);
   });
 
   it('falls back to a generated title when none is given', async () => {
