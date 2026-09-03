@@ -1,0 +1,18 @@
+# Runs MongoDB locally without installing it on your machine.
+# Start it with:  docker compose up -d
+# Stop it with:   docker compose down
+# Data survives restarts because of the named volume below.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: call-transcripts-mongo
+    ports:
+      # host:container — host port is 27018 to avoid clashing with any other
+      # local MongoDB already using the default 27017.
+      - '27018:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
