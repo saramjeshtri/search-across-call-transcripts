@@ -41,7 +41,10 @@ export class SearchService {
 
     const results: SearchResult[] = [];
     for (const { chunk } of top) {
-      const call = await this.calls.findOne(String(chunk.callId));
+      // a chunk's call may have been deleted since it was indexed - skip it rather than failing the whole search
+      const call = await this.calls.findOne(String(chunk.callId)).catch(() => null);
+      if (!call) continue;
+
       results.push({
         callId: String(chunk.callId),
         callTitle: call.title,

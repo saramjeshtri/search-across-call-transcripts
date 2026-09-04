@@ -5,7 +5,7 @@ import { Turn } from '../calls/transcript/turn.type';
 import { chunkBySize } from '../calls/chunking/chunking';
 
 // Free-tier models flip between available and overloaded, so we try more than one.
-const MODELS = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
+const MODELS = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
 
 // If the transcript is longer than this, summarise it in stages.
 const SINGLE_REQUEST_CHARS = 4000;

@@ -11,6 +11,7 @@ function formatTime(seconds: number) {
 
 export function SearchBar() {
   const [query, setQuery] = useState('')
+  const [searchedFor, setSearchedFor] = useState('')
   const [results, setResults] = useState<SearchResult[] | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -23,11 +24,17 @@ export function SearchBar() {
     setError('')
     try {
       setResults(await search(query))
+      setSearchedFor(query)
     } catch {
       setError('Search failed. Is the backend running?')
     } finally {
       setBusy(false)
     }
+  }
+
+  function clear() {
+    setResults(null)
+    setSearchedFor('')
   }
 
   return (
@@ -52,29 +59,45 @@ export function SearchBar() {
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
       {results && (
-        <ul className="mt-4 space-y-3">
-          {results.length === 0 && (
-            <li className="text-sm text-slate-500">No matches.</li>
-          )}
-          {results.map((r) => (
-            <li
-              key={`${r.callId}-${r.timeSeconds}`}
-              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+        <div className="mt-4">
+          <div className="mb-2 flex items-center justify-between text-xs text-slate-500">
+            <span>
+              {results.length} result{results.length === 1 ? '' : 's'} for
+              &nbsp;<span className="font-medium text-slate-700">“{searchedFor}”</span>
+            </span>
+            <button
+              type="button"
+              onClick={clear}
+              className="font-medium text-indigo-600 hover:text-indigo-800"
             >
-              <div className="flex items-baseline justify-between">
-                <span className="font-medium text-indigo-950">
-                  {r.callTitle}
-                </span>
-                <span className="text-xs text-slate-400">
-                  {formatTime(r.timeSeconds)}
-                </span>
-              </div>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
-                {r.context}
-              </p>
-            </li>
-          ))}
-        </ul>
+              Clear
+            </button>
+          </div>
+
+          <ul className="space-y-3">
+            {results.length === 0 && (
+              <li className="text-sm text-slate-500">No matches.</li>
+            )}
+            {results.map((r) => (
+              <li
+                key={`${r.callId}-${r.timeSeconds}`}
+                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-baseline justify-between">
+                  <span className="font-medium text-indigo-950">
+                    {r.callTitle}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {formatTime(r.timeSeconds)}
+                  </span>
+                </div>
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
+                  {r.context}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   )
