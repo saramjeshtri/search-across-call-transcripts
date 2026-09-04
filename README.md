@@ -43,4 +43,11 @@ npm run dev              # http://localhost:5173
 
 - `backend/` – the API
 - `frontend/` – the website
+- `sample-transcripts/` – example calls to upload
 - `docker-compose.yml` – the MongoDB database
+
+## Chunking evaluation (bonus)
+
+`cd backend && npm run eval` compares the three chunking strategies against a
+15-question set and prints the scores. Results and analysis are in
+`backend/README.md`.

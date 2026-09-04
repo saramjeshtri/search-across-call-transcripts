@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { CallsModule } from './calls/calls.module';
@@ -7,15 +7,9 @@ import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
+    // ConfigModule loads .env into process.env before anything else runs
     ConfigModule.forRoot({ isGlobal: true }),
-
-    // connect to MongoDB using the URI from .env
-    MongooseModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        uri: config.getOrThrow<string>('MONGO_URI'),
-      }),
-    }),
+    MongooseModule.forRoot(process.env.MONGO_URI ?? ''),
 
     CallsModule,
     SearchModule,

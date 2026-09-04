@@ -13,7 +13,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "eval": "ts-node --transpile-only eval/run.ts"
   },
   "dependencies": {
     "@google/genai": "^2.21.0",

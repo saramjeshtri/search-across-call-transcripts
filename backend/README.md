@@ -18,6 +18,30 @@ Needs MongoDB running (`docker compose up -d` from the project root).
 npm test
 ```
 
+## Chunking strategy evaluation (bonus)
+
+```bash
+npm run eval
+```
+
+Uploads the 5 sample calls, runs 15 questions (`eval/questions.ts`) against all 3
+strategies, and prints how often the right moment was the first result (top-1)
+and how often it was in the top 3. A result is a hit when it points to the right
+call and the returned context contains the answer. Needs MongoDB running and a
+Gemini key.
+
+Last run:
+
+| Strategy | top-1 | top-3 |
+| --- | --- | --- |
+| `speaker` | 80% | 87% |
+| `time` | 47% | 80% |
+| `size` | 67% | 87% |
+
+`speaker` wins: its chunk timestamp lands on the exact matching turn, so the
+returned context is centred on the answer. `time` is weakest &mdash; a 60-second
+window mixes topics into one blurry embedding. This matches the search default.
+
 ## Endpoints so far
 
 - `GET /health` – checks the API is up and the database is connected

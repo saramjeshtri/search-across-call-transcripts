@@ -9,6 +9,8 @@ const MODEL = 'gemini-flash-lite-latest';
 // If the transcript is longer than this, summarise it in stages.
 const SINGLE_REQUEST_CHARS = 4000;
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 @Injectable()
 export class SummariesService {
   private readonly logger = new Logger(SummariesService.name);
@@ -21,9 +23,7 @@ export class SummariesService {
   }
 
   async summarize(turns: Turn[]): Promise<string> {
-    const transcript = turns
-      .map((t) => `${t.speaker}: ${t.text}`)
-      .join('\n');
+    const transcript = turns.map((t) => `${t.speaker}: ${t.text}`).join('\n');
 
     if (transcript.length <= SINGLE_REQUEST_CHARS) {
       this.logger.log('summarising in a single request');
@@ -68,18 +68,19 @@ export class SummariesService {
     );
   }
 
-  // Gemini's free tier sometimes returns 503/429 under load, so retry a few times.
-  private async ask(prompt: string, attempt = 1): Promise<string> {
-    try {
-      const response = await this.ai.models.generateContent({
-        model: MODEL,
-        contents: prompt,
-      });
-      return (response.text ?? '').trim();
-    } catch (err) {
-      if (attempt >= 3) throw err;
-      await new Promise((r) => setTimeout(r, attempt * 2000));
-      return this.ask(prompt, attempt + 1);
+  // one prompt, retried a few times if Gemini is rate-limiting (429) or busy (503)
+  private async ask(prompt: string): Promise<string> {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        const response = await this.ai.models.generateContent({
+          model: MODEL,
+          contents: prompt,
+        });
+        return (response.text ?? '').trim();
+      } catch (err) {
+        if (attempt === 3) throw err;
+        await sleep(attempt * 2000);
+      }
     }
   }
 }

@@ -1,0 +1,16 @@
+[00:00:04] Account Manager: Hi Elena, thanks for hopping on. Your renewal is coming up in three weeks and I wanted to check in before it does.
+[00:00:14] Elena: Yeah, I've been meaning to reach out actually. I'm not sure we're going to renew this time.
+[00:00:21] Account Manager: I appreciate you being straight with me. Can you tell me what's changed?
+[00:00:27] Elena: Our team got cut in the reorg. We went from nine people down to three, and honestly only two of us still log in. The seat cost is hard to justify at that size.
+[00:00:40] Account Manager: That makes sense. I don't want you paying for nine seats you're not using. A couple of options. We can move you to the starter plan, which is a flat monthly fee for up to five users and comes out about seventy percent lower than what you're on now.
+[00:00:57] Elena: The starter plan might work. What do we lose on it?
+[00:01:03] Account Manager: You keep the core reporting and exports. You lose the API access and the custom dashboards. Given how you're using it now, I don't think you'd feel it.
+[00:01:14] Elena: Probably not. We mostly just pull the weekly report.
+[00:01:19] Account Manager: The other option, if you think the team might grow back, is to pause the account for up to three months. It freezes billing and keeps all your data and settings exactly as they are, and you can switch it back on any time.
+[00:01:34] Elena: I didn't know pausing was a thing. That's useful. I think I lean toward the starter plan though, the team isn't coming back this year.
+[00:01:44] Account Manager: Totally reasonable. Here's what I'll do. I'll send you a written breakdown of both the starter plan and the pause option, with exact pricing, and a usage report showing which features you've actually touched in the last quarter so you can see what you'd be giving up.
+[00:02:00] Elena: That would help. I need to run it past my manager for the budget sign-off.
+[00:02:06] Account Manager: Of course. When do you think you'll have a decision?
+[00:02:11] Elena: By the end of the month, before the renewal date.
+[00:02:15] Account Manager: Perfect. I'll get those documents to you by tomorrow, and I'll hold your current rate in case you need a few extra days.
+[00:02:24] Elena: Thanks, that's really helpful. Talk soon.

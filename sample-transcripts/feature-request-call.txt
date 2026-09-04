@@ -1,0 +1,14 @@
+[00:00:03] Support Agent: Thanks for calling support, this is Mia. How can I help?
+[00:00:09] Raj: Hi Mia. Two things. First, I'm trying to export a report as a PDF and I can only find CSV. Is PDF export hidden somewhere?
+[00:00:19] Support Agent: It's not hidden, PDF export isn't available yet. It's on the roadmap for next quarter though.
+[00:00:27] Raj: That's a shame, our finance team wants the formatted version, not raw numbers.
+[00:00:33] Support Agent: I understand. There is a workaround in the meantime. On the dashboard view you can use your browser's print function and choose "Save as PDF" as the destination. It keeps the formatting and the charts.
+[00:00:47] Raj: Oh, print to PDF from the browser. I didn't think of that. I'll try it.
+[00:00:53] Support Agent: I'll email you the exact steps with screenshots after this call.
+[00:00:58] Raj: Great. The second thing is a bug I think. Our scheduled email reports are arriving with the wrong timestamps. Everything shows in UTC instead of our local timezone.
+[00:01:10] Support Agent: Yes, that's a known issue with scheduled reports. The dashboard itself respects your timezone setting but the emailed version doesn't. Engineering has a fix lined up for the next release, which is about two weeks out.
+[00:01:25] Raj: Okay, good to know it's not just us. Is there anything we can do until then?
+[00:01:31] Support Agent: Not on your side, unfortunately. What I can do is add your account to the list of customers affected by that bug, so you'll get a notification the moment the fix ships.
+[00:01:42] Raj: Please do that. As long as I know it's coming.
+[00:01:47] Support Agent: Done. So to recap, I'll send you the print-to-PDF instructions, and I've flagged your account for the timezone fix notification. The PDF export feature itself is still next quarter.
+[00:01:59] Raj: That covers it. Thanks Mia.
