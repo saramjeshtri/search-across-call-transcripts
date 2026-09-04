@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getCalls } from './lib/api'
 import type { Call } from './types'
 import { UploadForm } from './components/UploadForm'
+import { SearchBar } from './components/SearchBar'
 import { CallList } from './components/CallList'
 
 function App() {
@@ -35,8 +36,16 @@ function App() {
         </section>
 
         <section>
+          <h2 className="mb-3 text-sm font-semibold text-slate-700">Search</h2>
+          <SearchBar />
+        </section>
+
+        <section>
           <h2 className="mb-3 text-sm font-semibold text-slate-700">
-            Calls{calls.length > 0 && <span className="text-slate-400"> · {calls.length}</span>}
+            Calls
+            {calls.length > 0 && (
+              <span className="text-slate-400"> · {calls.length}</span>
+            )}
           </h2>
           <CallList calls={calls} />
         </section>

@@ -53,8 +53,8 @@ export class EmbeddingsService {
           config: { taskType, outputDimensionality: DIMENSIONS },
         });
       } catch (err) {
-        if (attempt === 4) throw err;
-        await sleep(attempt * 15000);
+        if (attempt === 3) throw err;
+        await sleep(attempt * 5000);
       }
     }
   }

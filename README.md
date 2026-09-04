@@ -48,6 +48,6 @@ npm run dev              # http://localhost:5173
 
 ## Chunking evaluation (bonus)
 
-`cd backend && npm run eval` compares the three chunking strategies against a
-15-question set and prints the scores. Results and analysis are in
-`backend/README.md`.
+`cd backend && npm run eval` runs 15 questions against the three chunking
+strategies and counts how many the top search result got right. Results and
+analysis are in `backend/README.md`.
