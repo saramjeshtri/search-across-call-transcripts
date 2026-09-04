@@ -1,0 +1,45 @@
+[00:00:03] Onboarding Lead: Hi everyone, thanks for joining the kickoff. I'm Priya, I'll be running your onboarding for the next six weeks.
+[00:00:12] Client PM: Great to meet you. I'm Tom, project manager on our side. With me are Rachel from data and Sam from IT.
+[00:00:21] Onboarding Lead: Perfect. The goal today is to agree the rollout plan, the data migration approach, and who owns what.
+[00:00:31] Client PM: Sounds good. Our main deadline is the company all-hands on the 15th of next month where we want to demo the new reporting.
+[00:00:42] Onboarding Lead: Noted. That gives us about five weeks. Let's start with environments. We'll set up a staging tenant for you today.
+[00:00:53] IT: On staging, does it need to sit behind our VPN or is SSO enough?
+[00:01:02] Onboarding Lead: SSO is enough for staging. For production we'll want IP allowlisting as well. I'll send the config guide.
+[00:01:13] IT: Okay. We use Okta. I'll need a metadata URL from you to wire up the SAML app.
+[00:01:22] Onboarding Lead: I'll send the Okta metadata URL right after this call. Once you've created the app, share the IdP metadata back and we'll test login together on Thursday.
+[00:01:36] IT: Thursday works. I'll block an hour in the afternoon.
+[00:01:43] Onboarding Lead: Now data migration. Rachel, can you describe your current setup?
+[00:01:51] Data Analyst: We have about four years of sales and support data in a Postgres warehouse. Roughly 12 tables, the big ones are events and transactions with a few hundred million rows.
+[00:02:05] Onboarding Lead: That's manageable. We support two paths: a one-time bulk export via CSV, or a live connector that syncs incrementally. Given the volume I'd recommend the connector.
+[00:02:19] Data Analyst: The connector would be better for us, we don't want a frozen snapshot. What does it need access to?
+[00:02:28] Onboarding Lead: A read-only replica user, and outbound network access to our ingest endpoint on port 443. No inbound access needed.
+[00:02:39] IT: A read-only replica user is fine. I can have that provisioned by Wednesday.
+[00:02:47] Onboarding Lead: Great. Once the user exists, Rachel and I will run a test sync on the two smallest tables first to validate the mapping.
+[00:02:58] Data Analyst: How do we handle column mapping? Our naming is inconsistent, some tables use camelCase and others snake_case.
+[00:03:09] Onboarding Lead: The connector has a mapping file. We'll draft it together in a working session next week, I'll pre-fill what I can from your schema.
+[00:03:20] Client PM: Let's schedule that mapping session for Tuesday. Rachel, does the morning work for you?
+[00:03:28] Data Analyst: Tuesday morning is fine.
+[00:03:33] Onboarding Lead: Booked. Next, user provisioning. How many people need accounts at launch?
+[00:03:41] Client PM: About 60 for the all-hands demo, then roughly 400 company-wide over the following month.
+[00:03:50] Onboarding Lead: For 400 I'd strongly suggest SCIM provisioning from Okta rather than manual invites. It also handles deprovisioning when someone leaves.
+[00:04:02] IT: We have SCIM on our Okta plan. Add it to my list with the SAML app.
+[00:04:09] Onboarding Lead: Will do. I'll send SCIM setup steps alongside the SAML guide.
+[00:04:16] Client PM: What about roles and permissions? We have three groups: viewers, analysts, and admins.
+[00:04:25] Onboarding Lead: You can map Okta groups directly to our roles. We'll define that mapping in the same Tuesday session.
+[00:04:34] Client PM: Good, one less meeting. Now the reporting piece, that's what leadership actually cares about.
+[00:04:43] Onboarding Lead: Understood. For the all-hands you need the revenue dashboard and the support-response dashboard working with real data.
+[00:04:53] Data Analyst: The revenue dashboard needs our fiscal calendar, we start the year in February, not January.
+[00:05:03] Onboarding Lead: We support custom fiscal calendars. I'll need a document listing your period boundaries. Can you send that this week?
+[00:05:12] Data Analyst: I'll send the fiscal calendar definition by Friday.
+[00:05:18] Onboarding Lead: Perfect. Once data is flowing and the calendar is set, I'll build a first draft of both dashboards and we review them the week before the all-hands.
+[00:05:30] Client PM: Let's put that review on the calendar for the 8th. That gives us a week to fix anything.
+[00:05:38] Onboarding Lead: Agreed, review on the 8th. If we hit a blocker on data we may need to fall back to a partial dataset for the demo, but let's aim for full.
+[00:05:50] Client PM: Understood. What do you need from me overall to keep this on track?
+[00:05:57] Onboarding Lead: Mainly that the IT items land on time, they're on the critical path. The replica user by Wednesday, SAML and SCIM by Thursday for our test.
+[00:06:09] IT: I've got them written down. I'll confirm by end of day tomorrow that they're scheduled.
+[00:06:16] Onboarding Lead: Then let me recap the plan. IT provisions the read-only replica user by Wednesday and sets up SAML plus SCIM in Okta by Thursday. We test SSO login together Thursday afternoon.
+[00:06:31] Onboarding Lead: Rachel sends the fiscal calendar definition by Friday. Tuesday morning we hold a working session for the connector column mapping and the Okta group to role mapping.
+[00:06:45] Onboarding Lead: After the test sync validates, we run the full migration. I build draft dashboards, and we review them on the 8th ahead of the all-hands on the 15th.
+[00:06:58] Client PM: That matches what I have. I'll share these notes with our leadership today.
+[00:07:05] Onboarding Lead: I'll send the written plan, the Okta metadata URL, and the setup guides within the hour. Thanks everyone.
+[00:07:13] Client PM: Thanks Priya, talk Thursday.

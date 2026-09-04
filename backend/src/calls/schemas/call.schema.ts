@@ -22,6 +22,10 @@ export class Call {
   // Turns are stored inside the call because we always load them together.
   @Prop({ type: [TurnSchemaClass], default: [] })
   turns: TurnSchemaClass[];
+
+  // short summary + agreed next steps, generated on upload
+  @Prop({ default: '' })
+  summary: string;
 }
 
 export type CallDocument = HydratedDocument<Call>;

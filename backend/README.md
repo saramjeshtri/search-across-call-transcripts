@@ -22,16 +22,19 @@ npm test
 
 - `GET /health` – checks the API is up and the database is connected
 - `POST /calls` – body `{ "transcript": "...", "title": "..." }`; parses, saves, then chunks + embeds the call
-- `GET /calls` – list all calls (without the turns)
+- `GET /calls` – list all calls with their summaries (without the turns)
 - `GET /calls/:id` – one call with all its turns
 - `POST /search` – body `{ "query": "..." }`, optional `?strategy=speaker|time|size` (default `speaker`); returns the top 5 matches as `{ callId, callTitle, timeSeconds, context }`
 
-## Embeddings
+## AI (Google Gemini)
 
-`EmbeddingsService` wraps Google Gemini (`gemini-embedding-001`, 768 dimensions).
-On upload, `ChunksService.indexCall` runs all 3 chunking strategies, embeds every
-chunk, and saves each to the `chunks` collection as
-`{ callId, strategy, timeSeconds, embedding }`.
+- **Embeddings** – `EmbeddingsService` uses `gemini-embedding-001` (768 dims).
+  On upload, `ChunksService.indexCall` runs all 3 strategies, embeds every chunk,
+  and saves each as `{ callId, strategy, timeSeconds, embedding }`.
+- **Summaries** – `SummariesService` uses `gemini-flash-lite-latest`. Short calls
+  get one request; calls over ~4000 characters are summarised in stages (each
+  section separately, then the section summaries are combined). A failed summary
+  is logged and left empty – the call is still saved.
 
 ## Transcript format
 

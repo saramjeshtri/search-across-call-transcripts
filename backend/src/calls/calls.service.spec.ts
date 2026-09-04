@@ -3,14 +3,22 @@ import { getModelToken } from '@nestjs/mongoose';
 import { CallsService } from './calls.service';
 import { Call } from './schemas/call.schema';
 import { ChunksService } from '../chunks/chunks.service';
+import { SummariesService } from '../summaries/summaries.service';
 
 describe('CallsService', () => {
   let service: CallsService;
+  let saved: { save: jest.Mock; [key: string]: unknown };
 
   const callModel = {
-    create: jest.fn((doc) => Promise.resolve({ id: 'call-1', ...doc })),
+    create: jest.fn((doc) => {
+      saved = { id: 'call-1', ...doc, save: jest.fn() };
+      return Promise.resolve(saved);
+    }),
   };
   const chunksService = { indexCall: jest.fn() };
+  const summariesService = {
+    summarize: jest.fn().mockResolvedValue('a summary'),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -19,13 +27,14 @@ describe('CallsService', () => {
         CallsService,
         { provide: getModelToken(Call.name), useValue: callModel },
         { provide: ChunksService, useValue: chunksService },
+        { provide: SummariesService, useValue: summariesService },
       ],
     }).compile();
 
     service = module.get<CallsService>(CallsService);
   });
 
-  it('parses the transcript into turns before saving', async () => {
+  it('saves the parsed turns', async () => {
     const transcript = [
       '[00:00:04] Agent: Hello.',
       '[00:01:00] Customer: Hi there.',
@@ -33,15 +42,20 @@ describe('CallsService', () => {
 
     await service.create({ transcript, title: 'Demo call' });
 
-    expect(callModel.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Demo call',
-        turns: [
-          { speaker: 'Agent', timeSeconds: 4, text: 'Hello.' },
-          { speaker: 'Customer', timeSeconds: 60, text: 'Hi there.' },
-        ],
-      }),
-    );
+    expect(callModel.create).toHaveBeenCalledWith({
+      title: 'Demo call',
+      turns: [
+        { speaker: 'Agent', timeSeconds: 4, text: 'Hello.' },
+        { speaker: 'Customer', timeSeconds: 60, text: 'Hi there.' },
+      ],
+    });
+  });
+
+  it('adds the generated summary to the call', async () => {
+    await service.create({ transcript: '[00:00:00] A: hi', title: 'x' });
+
+    expect(saved.summary).toBe('a summary');
+    expect(saved.save).toHaveBeenCalled();
   });
 
   it('indexes the call after saving it', async () => {
