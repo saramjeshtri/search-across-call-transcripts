@@ -1,6 +1,6 @@
 import { Turn } from './turn.type';
 
-// Turns a plain-text transcript into a list of turns.
+// turns a plain-text transcript into a list of turns
 const TURN_LINE = /^\[(?:(\d{1,2}):)?(\d{1,2}):(\d{2})\]\s*([^:]+):\s?(.*)$/;
 
 export function parseTranscript(raw: string): Turn[] {

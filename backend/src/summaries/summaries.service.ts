@@ -4,10 +4,10 @@ import { GoogleGenAI } from '@google/genai';
 import { Turn } from '../calls/transcript/turn.type';
 import { chunkBySize } from '../calls/chunking/chunking';
 
-// Free-tier models flip between available and overloaded, so we try more than one.
+// free-tier models flip between available and overloaded, so try more than one
 const MODELS = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
 
-// If the transcript is longer than this, summarise it in stages.
+// if the transcript is longer than this, summarise it in stages
 const SINGLE_REQUEST_CHARS = 4000;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -45,7 +45,7 @@ export class SummariesService {
     return this.combineSummaries(sectionSummaries);
   }
 
-  // Plain text only, no markdown, so it renders cleanly in the UI.
+  // plain text only, no markdown, so it renders cleanly in the UI
   private readonly FORMAT =
     'Write 3-4 sentences of plain prose. Then a blank line, then a line ' +
     'reading exactly "Next steps:", then each agreed next step on its own ' +
@@ -72,8 +72,7 @@ export class SummariesService {
     );
   }
 
-  // Try each model twice, alternating, waiting longer each time.
-  // Handles a model that is rate-limited (429) or temporarily overloaded (503).
+  // try each model twice, waiting longer each retry
   private async ask(prompt: string): Promise<string> {
     const tries = [...MODELS, ...MODELS];
     let lastError: unknown;

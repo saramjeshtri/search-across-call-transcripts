@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
 
-const MODEL = 'gemini-embedding-001';
+const MODEL = 'gemini-embedding-2';
 const DIMENSIONS = 768;
 const BATCH_SIZE = 100; // max texts per API request
 
@@ -35,7 +35,16 @@ export class EmbeddingsService {
     for (let i = 0; i < texts.length; i += BATCH_SIZE) {
       const batch = texts.slice(i, i + BATCH_SIZE);
       const response = await this.callGemini(batch, taskType);
-      for (const e of response.embeddings ?? []) {
+      const embeddings = response.embeddings ?? [];
+
+      // one embedding per text - otherwise we'd quietly index empty vectors
+      if (embeddings.length !== batch.length) {
+        throw new Error(
+          `Expected ${batch.length} embeddings, got ${embeddings.length}`,
+        );
+      }
+
+      for (const e of embeddings) {
         vectors.push(e.values ?? []);
       }
     }
@@ -49,7 +58,8 @@ export class EmbeddingsService {
       try {
         return await this.ai.models.embedContent({
           model: MODEL,
-          contents: batch,
+          // wrap each text separately, or they'd be read as one document
+          contents: batch.map((text) => ({ parts: [{ text }] })),
           config: { taskType, outputDimensionality: DIMENSIONS },
         });
       } catch (err) {

@@ -9,6 +9,9 @@ import { cosineSimilarity } from './cosine';
 const RESULTS = 5;
 const CONTEXT_RADIUS = 2; // turns before and after the match
 
+// below this score, a chunk isn't a real match - measured against real queries
+const MIN_SCORE = 0.6;
+
 export interface SearchResult {
   callId: string;
   callTitle: string;
@@ -31,17 +34,18 @@ export class SearchService {
     const queryVector = await this.embeddings.embedQuery(query);
     const chunks = await this.chunks.findByStrategy(strategy);
 
-    const top = chunks
+    const ranked = chunks
       .map((chunk) => ({
         chunk,
         score: cosineSimilarity(queryVector, chunk.embedding),
       }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, RESULTS);
+      .sort((a, b) => b.score - a.score);
+
+    const top = ranked.filter((r) => r.score >= MIN_SCORE).slice(0, RESULTS);
 
     const results: SearchResult[] = [];
     for (const { chunk } of top) {
-      // a chunk's call may have been deleted since it was indexed - skip it rather than failing the whole search
+      // the call might have been deleted since - skip it, don't fail the search
       const call = await this.calls
         .findOne(String(chunk.callId))
         .catch(() => null);

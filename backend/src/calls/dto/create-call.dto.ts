@@ -1,7 +1,6 @@
 import { IsOptional, IsString, MinLength } from 'class-validator';
 
-// Body for POST /calls. The global ValidationPipe checks these rules
-// and returns 400 if they fail.
+// body for POST /calls
 export class CreateCallDto {
   @IsString()
   @MinLength(1)

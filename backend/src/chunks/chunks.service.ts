@@ -24,7 +24,7 @@ export class ChunksService {
   // chunk the call three ways and index each set
   async indexCall(callId: string, turns: Turn[]): Promise<void> {
     await this.indexChunks(callId, chunkBySpeakerTurn(turns));
-    await this.indexChunks(callId, chunkByTimeWindow(turns));
+    await this.indexChunks(callId, chunkByTimeWindow(turns, 60));
     await this.indexChunks(callId, chunkBySize(turns));
   }
 

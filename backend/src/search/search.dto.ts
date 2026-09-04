@@ -1,6 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
 
-// Body for POST /search
+// body for POST /search
 export class SearchDto {
   @IsString()
   @MinLength(1)

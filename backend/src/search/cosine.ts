@@ -1,4 +1,4 @@
-// How aligned are two vectors? 1 = same direction, 0 = unrelated.
+// how aligned are two vectors? 1 = same direction, 0 = unrelated
 export function cosineSimilarity(a: number[], b: number[]): number {
   let dot = 0;
   let magA = 0;
