@@ -4,7 +4,8 @@ import { GoogleGenAI } from '@google/genai';
 import { Turn } from '../calls/transcript/turn.type';
 import { chunkBySize } from '../calls/chunking/chunking';
 
-const MODEL = 'gemini-flash-lite-latest';
+// Free-tier models flip between available and overloaded, so we try more than one.
+const MODELS = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
 
 // If the transcript is longer than this, summarise it in stages.
 const SINGLE_REQUEST_CHARS = 4000;
@@ -42,45 +43,54 @@ export class SummariesService {
     return this.combineSummaries(sectionSummaries);
   }
 
+  // Plain text only, no markdown, so it renders cleanly in the UI.
+  private readonly FORMAT =
+    'Write 3-4 sentences of plain prose. Then a blank line, then a line ' +
+    'reading exactly "Next steps:", then each agreed next step on its own ' +
+    'line starting with "• ". If none were agreed, write "• None". ' +
+    'Do not use markdown, headings, bold or asterisks.';
+
   private summarizeWhole(transcript: string): Promise<string> {
     return this.ask(
-      'Summarise this call in 3-4 sentences, then list the next steps that ' +
-        'were agreed as short bullet points. If no next steps were agreed, ' +
-        'write "Next steps: none".\n\n' +
-        transcript,
+      `Summarise this call. ${this.FORMAT}\n\n${transcript}`,
     );
   }
 
   private summarizeSection(section: string): Promise<string> {
     return this.ask(
-      'This is one part of a longer call. Summarise it in 2-3 sentences and ' +
-        'note any next steps mentioned.\n\n' +
+      'This is one part of a longer call. Summarise it in 2-3 sentences of ' +
+        'plain text and note any next steps mentioned.\n\n' +
         section,
     );
   }
 
   private combineSummaries(sectionSummaries: string[]): Promise<string> {
     return this.ask(
-      'Below are summaries of consecutive parts of one call. Write a single ' +
-        'summary of the whole call in 3-4 sentences, then list the agreed ' +
-        'next steps as short bullet points.\n\n' +
+      `Below are summaries of consecutive parts of one call. Write one ` +
+        `summary of the whole call. ${this.FORMAT}\n\n` +
         sectionSummaries.join('\n\n'),
     );
   }
 
-  // one prompt, retried a few times if Gemini is rate-limiting (429) or busy (503)
+  // Try each model twice, alternating, waiting longer each time.
+  // Handles a model that is rate-limited (429) or temporarily overloaded (503).
   private async ask(prompt: string): Promise<string> {
-    for (let attempt = 1; ; attempt++) {
+    const tries = [...MODELS, ...MODELS];
+    let lastError: unknown;
+
+    for (const [i, model] of tries.entries()) {
       try {
         const response = await this.ai.models.generateContent({
-          model: MODEL,
+          model,
           contents: prompt,
         });
         return (response.text ?? '').trim();
       } catch (err) {
-        if (attempt === 3) throw err;
-        await sleep(attempt * 2000);
+        lastError = err;
+        await sleep((i + 1) * 1500);
       }
     }
+
+    throw lastError;
   }
 }

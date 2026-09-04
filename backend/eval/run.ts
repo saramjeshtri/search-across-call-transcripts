@@ -23,7 +23,6 @@ const SAMPLES = [
 const ROOT = join(process.cwd(), '..'); // run from backend/
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const pct = (n: number) => `${Math.round(n * 100)}%`.padStart(4);
 
 async function main() {
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -36,10 +35,10 @@ async function main() {
   await reset(db);
   await uploadSamples(calls);
 
-  console.log('strategy   top-1   top-3');
+  console.log(`strategy   correct (of ${QUESTIONS.length})`);
   for (const strategy of STRATEGIES) {
-    const { top1, top3 } = await score(search, strategy);
-    console.log(`${strategy.padEnd(9)}  ${pct(top1)}   ${pct(top3)}`);
+    const correct = await score(search, strategy);
+    console.log(`${strategy.padEnd(9)}  ${correct} / ${QUESTIONS.length}`);
   }
 
   await app.close();
@@ -65,19 +64,19 @@ async function uploadSamples(calls: CallsService) {
   console.log('\n');
 }
 
-// how often the right moment is the #1 result, and how often it's in the top 3
-async function score(search: SearchService, strategy: ChunkStrategy) {
-  let top1 = 0;
-  let top3 = 0;
+// how many of the questions did search get right on the first result?
+async function score(
+  search: SearchService,
+  strategy: ChunkStrategy,
+): Promise<number> {
+  let correct = 0;
 
   for (const q of QUESTIONS) {
-    const results = await search.search(q.query, strategy);
-    const rank = results.findIndex((r) => isCorrect(r, q));
-    if (rank === 0) top1++;
-    if (rank >= 0 && rank < 3) top3++;
+    const [topResult] = await search.search(q.query, strategy);
+    if (topResult && isCorrect(topResult, q)) correct++;
   }
 
-  return { top1: top1 / QUESTIONS.length, top3: top3 / QUESTIONS.length };
+  return correct;
 }
 
 // a result is right if it's the expected call and the answer phrase is in the context
