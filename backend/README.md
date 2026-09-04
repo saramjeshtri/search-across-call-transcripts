@@ -43,10 +43,8 @@ window mixes topics into one blurry embedding. This matches the search default.
 
 ## Endpoints so far
 
-- `GET /health` – checks the API is up and the database is connected
 - `POST /calls` – body `{ "transcript": "...", "title": "..." }`; parses, saves, then chunks + embeds the call
 - `GET /calls` – list all calls with their summaries (without the turns)
-- `GET /calls/:id` – one call with all its turns
 - `POST /search` – body `{ "query": "..." }`, optional `?strategy=speaker|time|size` (default `speaker`); returns the top 5 matches as `{ callId, callTitle, timeSeconds, context }`
 
 ## AI (Google Gemini)
@@ -54,10 +52,11 @@ window mixes topics into one blurry embedding. This matches the search default.
 - **Embeddings** – `EmbeddingsService` uses `gemini-embedding-001` (768 dims).
   On upload, `ChunksService.indexCall` runs all 3 strategies, embeds every chunk,
   and saves each as `{ callId, strategy, timeSeconds, embedding }`.
-- **Summaries** – `SummariesService` uses `gemini-flash-lite-latest`. Short calls
-  get one request; calls over ~4000 characters are summarised in stages (each
-  section separately, then the section summaries are combined). A failed summary
-  is logged and left empty – the call is still saved.
+- **Summaries** – `SummariesService` uses `gemini-flash-latest`, falling back to
+  `gemini-flash-lite-latest` if the first is busy. Short calls get one request;
+  calls over ~4000 characters are summarised in stages (each section separately,
+  then the section summaries are combined). A failed summary is logged and left
+  empty – the call is still saved.
 
 ## Transcript format
 

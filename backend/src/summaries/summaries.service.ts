@@ -32,7 +32,9 @@ export class SummariesService {
     }
 
     // long call: summarise each section, then summarise the section summaries
-    const sections = chunkBySize(turns, SINGLE_REQUEST_CHARS).map((c) => c.text);
+    const sections = chunkBySize(turns, SINGLE_REQUEST_CHARS).map(
+      (c) => c.text,
+    );
     this.logger.log(`summarising in ${sections.length} stages + 1 combine`);
 
     const sectionSummaries: string[] = [];
@@ -51,9 +53,7 @@ export class SummariesService {
     'Do not use markdown, headings, bold or asterisks.';
 
   private summarizeWhole(transcript: string): Promise<string> {
-    return this.ask(
-      `Summarise this call. ${this.FORMAT}\n\n${transcript}`,
-    );
+    return this.ask(`Summarise this call. ${this.FORMAT}\n\n${transcript}`);
   }
 
   private summarizeSection(section: string): Promise<string> {

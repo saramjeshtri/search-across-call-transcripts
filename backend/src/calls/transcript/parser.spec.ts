@@ -8,15 +8,23 @@ describe('parseTranscript', () => {
     ].join('\n');
 
     expect(parseTranscript(raw)).toEqual([
-      { speaker: 'Agent', timeSeconds: 4, text: 'Thanks for calling, how can I help?' },
-      { speaker: 'Customer', timeSeconds: 11, text: 'My order has not arrived.' },
+      {
+        speaker: 'Agent',
+        timeSeconds: 4,
+        text: 'Thanks for calling, how can I help?',
+      },
+      {
+        speaker: 'Customer',
+        timeSeconds: 11,
+        text: 'My order has not arrived.',
+      },
     ]);
   });
 
   it('converts HH:MM:SS timestamps to seconds', () => {
-    expect(parseTranscript('[01:02:03] Agent: Still here.')[0].timeSeconds).toBe(
-      3723,
-    );
+    expect(
+      parseTranscript('[01:02:03] Agent: Still here.')[0].timeSeconds,
+    ).toBe(3723);
   });
 
   it('merges a line without a timestamp into the previous turn', () => {

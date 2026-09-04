@@ -1,9 +1,5 @@
 import { Turn } from '../transcript/turn.type';
-import {
-  chunkBySpeakerTurn,
-  chunkByTimeWindow,
-  chunkBySize,
-} from './chunking';
+import { chunkBySpeakerTurn, chunkByTimeWindow, chunkBySize } from './chunking';
 
 const turn = (speaker: string, timeSeconds: number, text: string): Turn => ({
   speaker,

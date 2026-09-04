@@ -33,6 +33,7 @@ export function SearchBar() {
   }
 
   function clear() {
+    setQuery('')
     setResults(null)
     setSearchedFor('')
   }

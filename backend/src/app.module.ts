@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
 import { CallsModule } from './calls/calls.module';
 import { SearchModule } from './search/search.module';
 
@@ -14,6 +13,5 @@ import { SearchModule } from './search/search.module';
     CallsModule,
     SearchModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {}
