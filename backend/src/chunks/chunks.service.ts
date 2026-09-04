@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Chunk, ChunkDocument } from './schemas/chunk.schema';
+import { ChunkStrategy } from '../calls/chunking/chunk.type';
 import { Turn } from '../calls/transcript/turn.type';
 import {
   chunkBySpeakerTurn,
@@ -45,5 +46,10 @@ export class ChunksService {
     }
 
     return saved;
+  }
+
+  // all chunks for one strategy, used by search
+  findByStrategy(strategy: ChunkStrategy): Promise<Chunk[]> {
+    return this.chunkModel.find({ strategy }).lean().exec();
   }
 }

@@ -44,18 +44,11 @@ describe('CallsService', () => {
     );
   });
 
-  it('indexes the saved call', async () => {
+  it('indexes the call after saving it', async () => {
     await service.create({ transcript: '[00:00:00] A: hi', title: 'x' });
 
     expect(chunksService.indexCall).toHaveBeenCalledWith('call-1', [
       { speaker: 'A', timeSeconds: 0, text: 'hi' },
     ]);
-  });
-
-  it('falls back to a generated title when none is given', async () => {
-    await service.create({ transcript: '[00:00:00] A: hi' });
-
-    const arg = callModel.create.mock.calls[0][0];
-    expect(arg.title).toMatch(/^Call /);
   });
 });

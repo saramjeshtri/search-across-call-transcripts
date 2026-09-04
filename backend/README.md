@@ -24,6 +24,7 @@ npm test
 - `POST /calls` – body `{ "transcript": "...", "title": "..." }`; parses, saves, then chunks + embeds the call
 - `GET /calls` – list all calls (without the turns)
 - `GET /calls/:id` – one call with all its turns
+- `POST /search` – body `{ "query": "..." }`, optional `?strategy=speaker|time|size` (default `speaker`); returns the top 5 matches as `{ callId, callTitle, timeSeconds, context }`
 
 ## Embeddings
 
