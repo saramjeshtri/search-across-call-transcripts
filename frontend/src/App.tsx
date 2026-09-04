@@ -1,37 +1,46 @@
 import { useEffect, useState } from 'react'
-import { api } from './lib/api'
-
-type Health = { status: string; db: string }
+import { getCalls } from './lib/api'
+import type { Call } from './types'
+import { UploadForm } from './components/UploadForm'
+import { CallList } from './components/CallList'
 
 function App() {
-  const [health, setHealth] = useState<Health | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [calls, setCalls] = useState<Call[]>([])
 
-  // On first render, call the backend to prove the frontend <-> API wiring works.
+  function loadCalls() {
+    getCalls().then(setCalls).catch(console.error)
+  }
+
   useEffect(() => {
-    api
-      .get<Health>('/health')
-      .then((res) => setHealth(res.data))
-      .catch((err) => setError(err.message))
+    loadCalls()
   }, [])
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-2xl p-8">
-        <h1 className="text-2xl font-bold">Call Transcript Search</h1>
-        <p className="mt-1 text-slate-600">Step 1 — scaffold check</p>
-
-        <div className="mt-6 rounded-lg border border-slate-200 bg-white p-4">
-          <h2 className="font-semibold">Backend health</h2>
-          {health && (
-            <p className="mt-2 text-green-700">
-              API: {health.status} · DB: {health.db}
-            </p>
-          )}
-          {error && <p className="mt-2 text-red-700">Cannot reach API: {error}</p>}
-          {!health && !error && <p className="mt-2 text-slate-500">Checking…</p>}
+      <header className="bg-indigo-600 text-white">
+        <div className="mx-auto max-w-3xl px-6 py-6">
+          <h1 className="text-xl font-semibold">Call Transcript Search</h1>
+          <p className="mt-0.5 text-sm text-indigo-100">
+            Upload calls, get summaries, and search every call by meaning.
+          </p>
         </div>
-      </div>
+      </header>
+
+      <main className="mx-auto max-w-3xl space-y-10 px-6 py-8">
+        <section>
+          <h2 className="mb-3 text-sm font-semibold text-slate-700">
+            Upload a transcript
+          </h2>
+          <UploadForm onUploaded={loadCalls} />
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-sm font-semibold text-slate-700">
+            Calls{calls.length > 0 && <span className="text-slate-400"> · {calls.length}</span>}
+          </h2>
+          <CallList calls={calls} />
+        </section>
+      </main>
     </div>
   )
 }
