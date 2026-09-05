@@ -24,6 +24,8 @@ npm test
 npm run eval
 ```
 
+Note: this wipes the `calls` and `chunks` collections before it runs.
+
 Uploads the 5 sample calls, runs 15 questions (`eval/questions.ts`) against all 3
 strategies, and counts how many the **first search result** got right. A result
 is right when it points to the correct call and the returned context contains
@@ -42,7 +44,7 @@ turn means the chunk's timestamp lands on the exact matching turn, so the
 returned context is centred on the answer. `time` is weakest &mdash; a
 60-second window mixes several topics into one blurry embedding.
 
-## Endpoints so far
+## Endpoints
 
 - `POST /calls` – body `{ "transcript": "...", "title": "..." }`; parses, saves, then chunks + embeds the call
 - `GET /calls` – list all calls with their summaries (without the turns)
