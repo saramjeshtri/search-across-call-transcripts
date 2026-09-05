@@ -33,23 +33,24 @@ Last run:
 
 | Strategy | Correct (of 15) |
 | --- | --- |
-| `speaker` | 12 |
+| `speaker` | 13 |
 | `time` | 7 |
-| `size` | 10 |
+| `size` | 8 |
 
-`speaker` wins: its chunk timestamp lands on the exact matching turn, so the
-returned context is centred on the answer. `time` is weakest &mdash; a 60-second
-window mixes topics into one blurry embedding. This matches the search default.
+`speaker` performs best, which is why it's the search default. One chunk per
+turn means the chunk's timestamp lands on the exact matching turn, so the
+returned context is centred on the answer. `time` is weakest &mdash; a
+60-second window mixes several topics into one blurry embedding.
 
 ## Endpoints so far
 
 - `POST /calls` – body `{ "transcript": "...", "title": "..." }`; parses, saves, then chunks + embeds the call
 - `GET /calls` – list all calls with their summaries (without the turns)
-- `POST /search` – body `{ "query": "..." }`, optional `?strategy=speaker|time|size` (default `speaker`); returns the top 5 matches as `{ callId, callTitle, timeSeconds, context }`
+- `POST /search` – body `{ "query": "..." }`, optional `?strategy=speaker|time|size` (default `speaker`); returns up to 5 relevant matches as `{ callId, callTitle, timeSeconds, context }` (fewer, or none, if nothing clears the relevance threshold)
 
 ## AI (Google Gemini)
 
-- **Embeddings** – `EmbeddingsService` uses `gemini-embedding-001` (768 dims).
+- **Embeddings** – `EmbeddingsService` uses `gemini-embedding-2` (768 dims).
   On upload, `ChunksService.indexCall` runs all 3 strategies, embeds every chunk,
   and saves each as `{ callId, strategy, timeSeconds, embedding }`.
 - **Summaries** – `SummariesService` uses `gemini-flash-latest`, falling back to

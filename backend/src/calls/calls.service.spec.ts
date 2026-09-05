@@ -14,6 +14,7 @@ describe('CallsService', () => {
       saved = { id: 'call-1', ...doc, save: jest.fn() };
       return Promise.resolve(saved);
     }),
+    findByIdAndDelete: jest.fn().mockResolvedValue(null),
   };
   const chunksService = { indexCall: jest.fn() };
   const summariesService = {
@@ -22,6 +23,7 @@ describe('CallsService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    chunksService.indexCall.mockResolvedValue(undefined); // default: indexing works
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CallsService,
@@ -64,5 +66,23 @@ describe('CallsService', () => {
     expect(chunksService.indexCall).toHaveBeenCalledWith('call-1', [
       { speaker: 'A', timeSeconds: 0, text: 'hi' },
     ]);
+  });
+
+  it('deletes the call if indexing fails, so no unsearchable call is left behind', async () => {
+    chunksService.indexCall.mockRejectedValue(new Error('out of quota'));
+
+    await expect(
+      service.create({ transcript: '[00:00:00] A: hi', title: 'x' }),
+    ).rejects.toThrow('out of quota');
+
+    expect(callModel.findByIdAndDelete).toHaveBeenCalledWith('call-1');
+  });
+
+  it('rejects a transcript with no parseable turns', async () => {
+    await expect(
+      service.create({ transcript: '   ', title: 'x' }),
+    ).rejects.toThrow('No turns found');
+
+    expect(callModel.create).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Call, CallDocument } from './schemas/call.schema';
@@ -21,6 +26,13 @@ export class CallsService {
   async create(dto: CreateCallDto): Promise<CallDocument> {
     const turns = parseTranscript(dto.transcript);
 
+    // nothing parsed - reject instead of saving an empty, useless call
+    if (turns.length === 0) {
+      throw new BadRequestException(
+        'No turns found. Check the transcript format: [mm:ss] Speaker: text',
+      );
+    }
+
     const call = await this.callModel.create({
       title: dto.title?.trim() || `Call ${new Date().toISOString()}`,
       turns,
@@ -35,7 +47,15 @@ export class CallsService {
       this.logger.warn(`Summary failed for call ${call.id}: ${err}`);
     }
 
-    await this.chunksService.indexCall(call.id, turns);
+    // without chunks the call can't be searched at all, so don't keep a
+    // half-saved one - undo it and let the caller know the upload failed
+    try {
+      await this.chunksService.indexCall(call.id, turns);
+    } catch (err) {
+      this.logger.error(`Indexing failed for call ${call.id}: ${err}`);
+      await this.callModel.findByIdAndDelete(call.id).catch(() => null);
+      throw err;
+    }
 
     return call;
   }

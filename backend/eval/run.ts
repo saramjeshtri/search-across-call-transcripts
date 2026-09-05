@@ -20,7 +20,7 @@ const SAMPLES = [
   'feature-request-call',
 ];
 
-const ROOT = join(process.cwd(), '..'); // run from backend/
+const ROOT = join(process.cwd(), '..'); // run from backend
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

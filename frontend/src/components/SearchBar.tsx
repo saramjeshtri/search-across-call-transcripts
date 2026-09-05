@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { search } from '../lib/api'
+import { search, isNetworkError, apiErrorMessage } from '../lib/api'
 import type { SearchResult } from '../types'
 
 // 139 -> "2:19"
@@ -7,6 +7,27 @@ function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+// context is "Speaker: text" lines - bold the speaker so it's easy to scan
+function ContextLines({ text }: { text: string }) {
+  return (
+    <>
+      {text.split('\n').map((line, i) => {
+        const split = line.indexOf(': ')
+        if (split === -1) return <div key={i}>{line}</div>
+
+        return (
+          <div key={i}>
+            <span className="font-semibold text-slate-800">
+              {line.slice(0, split)}:
+            </span>
+            {line.slice(split + 1)}
+          </div>
+        )
+      })}
+    </>
+  )
 }
 
 export function SearchBar() {
@@ -18,15 +39,22 @@ export function SearchBar() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!query.trim()) return
+    if (!query.trim()) {
+      setError('Please type something to search for.')
+      return
+    }
 
     setBusy(true)
     setError('')
     try {
       setResults(await search(query))
       setSearchedFor(query)
-    } catch {
-      setError('Search failed. Is the backend running?')
+    } catch (err) {
+      setError(
+        isNetworkError(err)
+          ? 'Cannot reach the server. Is the backend running?'
+          : (apiErrorMessage(err) ?? 'Search failed. Please try again.'),
+      )
     } finally {
       setBusy(false)
     }
@@ -85,16 +113,16 @@ export function SearchBar() {
                 className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
               >
                 <div className="flex items-baseline justify-between">
-                  <span className="font-medium text-indigo-950">
+                  <span className="font-semibold text-indigo-700">
                     {r.callTitle}
                   </span>
                   <span className="text-xs text-slate-400">
                     {formatTime(r.timeSeconds)}
                   </span>
                 </div>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
-                  {r.context}
-                </p>
+                <div className="mt-2 space-y-0.5 text-sm leading-relaxed text-slate-600">
+                  <ContextLines text={r.context} />
+                </div>
               </li>
             ))}
           </ul>
